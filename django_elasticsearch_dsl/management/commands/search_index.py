@@ -152,7 +152,8 @@ class Command(BaseCommand):
                 doc.django.model.__name__,
                 "(parallel)" if parallel else "")
             )
-
+            
+            step_count = 1
             step = int(count / step_count)
             rest = count % step_count
             for i in range(step_count):
