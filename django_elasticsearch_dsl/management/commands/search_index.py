@@ -141,16 +141,30 @@ class Command(BaseCommand):
                     "alias to make index name available.".format(index._name)
                 )
 
+    # for indexing very large amount of documents
     def _populate(self, models, options):
         parallel = options['parallel']
         for doc in registry.get_documents(models):
+            print('getting count')
+            count = doc().get_queryset().count() - 277843043
             self.stdout.write("Indexing {} '{}' objects {}".format(
-                doc().get_queryset().count() if options['count'] else "all",
+                count if options['count'] else "all",
                 doc.django.model.__name__,
                 "(parallel)" if parallel else "")
             )
-            qs = doc().get_indexing_queryset()
-            doc().update(qs, parallel=parallel, refresh=options['refresh'])
+
+            step = int(count / step_count)
+            rest = count % step_count
+            for i in range(step_count):
+                start = i * step
+                if i == step_count - 1:
+                    end = (i+1) * step + rest
+                else:
+                    end = (i+1) * step
+
+                print('iteration: ', start, end)
+                qs = doc().get_indexing_queryset(start=start + 277843043, end=end + 277843043)
+                doc().update(qs, parallel=parallel, refresh=options['refresh'])
 
     def _get_alias_indices(self, alias):
         alias_indices = self.es_conn.indices.get_alias(name=alias)
