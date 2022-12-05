@@ -87,21 +87,46 @@ class DocType(DSLDocument):
             doc_type=[cls],
             model=cls.django.model
         )
+    
+    # def get_queryset(self):
+    #     """
+    #     Return the queryset that should be indexed by this doc type.
+    #     """
+    #     return self.django.model._default_manager.all()
 
-    def get_queryset(self):
+    # for indexing very large amounts of documents
+    def get_queryset(self, start=None, end=None):
         """
         Return the queryset that should be indexed by this doc type.
         """
-        return self.django.model._default_manager.all()
+        print('test: ', start, end)
+        if start is None or end is None:
+            return self.django.model._default_manager.all()
+        else:
+            return self.django.model._default_manager.all()[start:end]
 
-    def get_indexing_queryset(self):
+    # def get_indexing_queryset(self):
+    #     """
+    #     Build queryset (iterator) for use by indexing.
+    #     """
+    #     qs = self.get_queryset()
+    #     kwargs = {}
+    #     if DJANGO_VERSION >= (2,) and self.django.queryset_pagination:
+    #         kwargs = {'chunk_size': self.django.queryset_pagination}
+    #
+    #     return qs.iterator(**kwargs)
+
+    # for indexing very large amount of documents
+    def get_indexing_queryset(self, start=None, end=None):
         """
         Build queryset (iterator) for use by indexing.
         """
-        qs = self.get_queryset()
+        print(start, end)
+        qs = self.get_queryset(start=start, end=end)
         kwargs = {}
         if DJANGO_VERSION >= (2,) and self.django.queryset_pagination:
             kwargs = {'chunk_size': self.django.queryset_pagination}
+
         return qs.iterator(**kwargs)
 
     def init_prepare(self):
