@@ -153,7 +153,7 @@ class Command(BaseCommand):
                 "(parallel)" if parallel else "")
             )
             
-            step_count = 2
+            step_count = 3
             step = int(count / step_count)
             rest = count % step_count
             for i in range(step_count):
