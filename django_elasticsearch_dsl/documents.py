@@ -103,7 +103,7 @@ class DocType(DSLDocument):
         if start is None or end is None:
             return self.django.model._default_manager.all()
         else:
-            return self.django.model._default_manager.filter(date__lt='2022-12-11')[start:end]
+            return self.django.model._default_manager.all()[start:end]
 
     # def get_indexing_queryset(self):
     #     """
