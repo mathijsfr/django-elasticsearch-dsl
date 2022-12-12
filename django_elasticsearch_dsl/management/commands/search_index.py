@@ -146,7 +146,7 @@ class Command(BaseCommand):
         parallel = options['parallel']
         for doc in registry.get_documents(models):
             print('getting count')
-            count = doc().get_queryset().count()
+            count = doc().get_queryset().count() - 26799586
             self.stdout.write("Indexing {} '{}' objects {}".format(
                 count if options['count'] else "all",
                 doc.django.model.__name__,
@@ -163,8 +163,8 @@ class Command(BaseCommand):
                 else:
                     end = (i+1) * step
 
-                print('iteration: ', start, end)
-                qs = doc().get_indexing_queryset(start=start, end=end)
+                print('iteration: ', start - 26799586, end - 26799586)
+                qs = doc().get_indexing_queryset(start=start - 26799586, end=end - 26799586)
                 doc().update(qs, parallel=parallel, refresh=options['refresh'])
 
     def _get_alias_indices(self, alias):
